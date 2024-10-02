@@ -16,5 +16,8 @@ describe('Integration Test: Token and AnotherContract', async function () {
 		await anotherContract.waitForDeployment();
 	});
 
-	it('should tranfer tokens to AnotherContract', async function () {});
+	it('should tranfer tokens to AnotherContract', async function () {
+		expect(await token.balanceOf(owner.address)).to.equals(ethers.parseEther('1000000'));
+		expect(await token.balanceOf(await anotherContract.getAddress())).to.equals(0);
+	});
 });

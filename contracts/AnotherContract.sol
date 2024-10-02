@@ -11,11 +11,11 @@ contract  AnotherContract {
    }
 
    function receiveTokens(uint256 amount) public {
-      require(token.balancOf(msg.sender) >= amount, "Insufficient balance in sender.");
+      require(token.balanceOf(msg.sender) >= amount, "Insufficient balance in sender.");
       require(token.transferFrom(msg.sender, address(this), amount), "Transfer failed.");
    }
 
    function getContractTokenBalance() public view returns (uint256) {
-      return token.balancOf(address(this));
+      return token.balanceOf(address(this));
    }
 }

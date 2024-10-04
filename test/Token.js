@@ -19,5 +19,25 @@ describe('Integration Test: Token and AnotherContract', async function () {
 	it('should tranfer tokens to AnotherContract', async function () {
 		expect(await token.balanceOf(owner.address)).to.equals(ethers.parseEther('1000000'));
 		expect(await token.balanceOf(await anotherContract.getAddress())).to.equals(0);
+
+		await token.approve(await anotherContract.getAddress(), ethers.parseEther('100'));
+		await anotherContract.receiveTokens(ethers.parseEther('100'));
+
+		expect(await token.balanceOf(owner.address)).to.be.equal(ethers.parseEther('999900'));
+		expect(await token.balanceOf(await anotherContract.getAddress())).to.be.equal(ethers.parseEther('100'));
+	});
+
+	it("should fail if the user doesn't have enough token", async function () {
+		await expect(anotherContract.connect(user).receiveTokens(ethers.parseEther('100'))).to.be.revertedWith(
+			'Insufficient balance in sender.'
+		);
+	});
+
+	it('should return correct balance of AnotherContract', async function () {
+		await token.approve(await anotherContract.getAddress(), ethers.parseEther('200'));
+		await anotherContract.receiveTokens(ethers.parseEther('200'));
+
+		const contractBalance = await anotherContract.getContractTokenBalance();
+		expect(contractBalance).to.equal(ethers.parseEther('200'));
 	});
 });
